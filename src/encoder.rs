@@ -115,7 +115,9 @@ impl ImageEncoder {
         let pixelformat = match self.color_format {
             ColorFormat::Bgra8 => BitmapPixelFormat::Bgra8,
             ColorFormat::Rgba8 => BitmapPixelFormat::Rgba8,
-            ColorFormat::Rgba16F => return Err(ImageEncoderError::UnsupportedFormat),
+            ColorFormat::Rgba16F | ColorFormat::Nv12 => {
+                return Err(ImageEncoderError::UnsupportedFormat)
+            }
         };
 
         encoder.SetPixelData(
