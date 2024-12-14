@@ -5,7 +5,6 @@ pub enum ColorFormat {
     Rgba16F = 10,
     Rgba8 = 28,
     Bgra8 = 87,
-    Nv12 = 103,
 }
 
 impl Default for ColorFormat {

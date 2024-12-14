@@ -521,7 +521,6 @@ impl<'a> FrameBuffer<'a> {
             ColorFormat::Rgba16F => self.width * 8,
             ColorFormat::Rgba8 => self.width * 4,
             ColorFormat::Bgra8 => self.width * 4,
-            ColorFormat::Nv12 => self.width * 3 / 2,
         } as usize;
         let frame_size = width_size * self.height as usize;
 
