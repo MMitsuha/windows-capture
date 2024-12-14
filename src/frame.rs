@@ -153,8 +153,18 @@ impl<'a> Frame<'a> {
     /// The color format of the frame.
     #[must_use]
     #[inline]
-    pub const fn color_format(&self) -> ColorFormat {
+    pub const fn get_color_format(&self) -> ColorFormat {
         self.color_format
+    }
+
+    /// Set the color format of the frame.
+    ///
+    /// # Returns
+    ///
+    /// The color format of the frame.
+    #[inline]
+    pub fn set_color_format(&mut self, color_format: ColorFormat) {
+        self.color_format = color_format
     }
 
     /// Get the raw surface of the frame.
@@ -489,6 +499,13 @@ impl<'a> FrameBuffer<'a> {
         self.raw_buffer
     }
 
+    /// Get the raw pixel data with possible padding.
+    #[must_use]
+    #[inline]
+    pub fn as_raw_buffer_mut(&mut self) -> &mut [u8] {
+        self.raw_buffer
+    }
+
     /// Get the raw pixel data without padding.
     ///
     /// # Returns
@@ -500,18 +517,18 @@ impl<'a> FrameBuffer<'a> {
             return Ok(self.raw_buffer);
         }
 
-        let multiplyer = match self.color_format {
-            ColorFormat::Rgba16F => 8,
-            ColorFormat::Rgba8 => 4,
-            ColorFormat::Bgra8 => 4,
-        };
+        let width_size = match self.color_format {
+            ColorFormat::Rgba16F => self.width * 8,
+            ColorFormat::Rgba8 => self.width * 4,
+            ColorFormat::Bgra8 => self.width * 4,
+            ColorFormat::Nv12 => self.width * 3 / 2,
+        } as usize;
+        let frame_size = width_size * self.height as usize;
 
-        let frame_size = (self.width * self.height * multiplyer) as usize;
         if self.buffer.capacity() < frame_size {
             self.buffer.resize(frame_size, 0);
         }
 
-        let width_size = (self.width * multiplyer) as usize;
         let buffer_address = self.buffer.as_mut_ptr() as isize;
         (0..self.height).into_par_iter().for_each(|y| {
             let index = (y * self.row_pitch) as usize;
