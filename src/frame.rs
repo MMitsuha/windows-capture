@@ -485,7 +485,7 @@ impl<'a> FrameBuffer<'a> {
     /// Get the raw pixel data with possible padding.
     #[must_use]
     #[inline]
-    pub fn as_raw_buffer(&mut self) -> &mut [u8] {
+    pub fn as_raw_buffer(&self) -> &[u8] {
         self.raw_buffer
     }
 
